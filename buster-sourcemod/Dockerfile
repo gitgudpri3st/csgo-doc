@@ -6,7 +6,8 @@ FROM cm2network/steamcmd:root
 LABEL maintainer="walentinlamonos@gmail.com"
 
 ENV STEAMAPPID 740
-ENV STEAMAPPDIR /home/steam/csgo-dedicated
+ENV SERVERNO 1
+ENV STEAMAPPDIR /hdd/docker-csgo/go_m${SERVERNO}
 
 # Create autoupdate config
 # Add entry script & ESL config
@@ -18,7 +19,7 @@ RUN set -x \
 		ca-certificates=20190110 \
 	&& mkdir -p ${STEAMAPPDIR}/csgo \
 	&& cd ${STEAMAPPDIR} \
-	&& wget https://raw.githubusercontent.com/CM2Walki/CSGO/master/etc/entry.sh \
+	&& wget https://raw.githubusercontent.com/gitgudpri3st/csgo-doc/master/etc/entry.sh \
 	&& chmod 755 ${STEAMAPPDIR}/entry.sh \
 	&& cd ${STEAMAPPDIR}/csgo \
 	&& { \
@@ -29,10 +30,10 @@ RUN set -x \
 			echo 'app_update ${STEAMAPPID}'; \
 			echo 'quit'; \
 		} > ${STEAMAPPDIR}/csgo_update.txt \
-	&& wget -qO- https://raw.githubusercontent.com/CM2Walki/CSGO/master/etc/cfg.tar.gz | tar xvzf - \
+	&& wget -qO- https://raw.githubusercontent.com/gitgudpri3st/csgo-doc/master/etc/cfg.tar.gz | tar xvzf - \
 	&& wget -qO- https://mms.alliedmods.net/mmsdrop/1.10/mmsource-1.10.7-git971-linux.tar.gz | tar xvzf - \
 	&& wget -qO- https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6461-linux.tar.gz | tar xvzf - \
-	&& chown -R steam:steam ${STEAMAPPDIR} \
+	&& chown -R kaiser:kaiser ${STEAMAPPDIR} \
 	&& apt-get remove --purge -y \
 		wget \
 	&& apt-get clean autoclean \
@@ -41,10 +42,10 @@ RUN set -x \
 
 ENV SRCDS_FPSMAX=300 \
 	SRCDS_TICKRATE=128 \
-	SRCDS_PORT=27015 \
-	SRCDS_TV_PORT=27020 \
+	SRCDS_PORT=27020 \
+	SRCDS_TV_PORT=27050 \
 	SRCDS_CLIENT_PORT=27005 \
-	SRCDS_MAXPLAYERS=14 \
+	SRCDS_MAXPLAYERS=16 \
 	SRCDS_TOKEN=0 \
 	SRCDS_RCONPW="changeme" \
 	SRCDS_PW="changeme" \
@@ -54,7 +55,7 @@ ENV SRCDS_FPSMAX=300 \
 	SRCDS_GAMETYPE=0 \
 	SRCDS_GAMEMODE=1
 
-USER steam
+USER kaiser
 
 WORKDIR $STEAMAPPDIR
 
@@ -63,4 +64,4 @@ VOLUME $STEAMAPPDIR
 ENTRYPOINT ${STEAMAPPDIR}/entry.sh
 
 # Expose ports
-EXPOSE 27015/tcp 27015/udp 27020/udp
+EXPOSE 27020/tcp 27020/udp 27050/udp
